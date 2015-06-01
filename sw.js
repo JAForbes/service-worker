@@ -6,6 +6,10 @@ self.oninstall = function(event) {
   event.waitUntil(
     caches.open("v1").then(function(cache) {
       return cache.addAll([
+      	"/service-worker/",
+      	"/service-worker/index.html",
+      	"/service-worker/app.js",
+      	"/service-worker/fallback.jpg",
         new Request('https://dhsn5tcrzbqtk.cloudfront.net/1/large/5427196-e1341q.jpg', {mode: 'no-cors'})
       ]);
 
