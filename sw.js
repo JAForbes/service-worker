@@ -18,22 +18,19 @@ self.oninstall = function(event) {
 }
 
 self.onfetch = function(event) {
+	var networkRequest = fetch.bind(null,event.request)
+	var cacheFallback = caches.match.bind(caches,"https://dhsn5tcrzbqtk.cloudfront.net/1/large/5427196-e1341q.jpg")
 
+	event.respondWith(
+		caches.match(event.request)
+			.then(responseOK)
+			.catch(networkRequest)
+			.then(responseOK)
+			.catch(cacheFallback)
+	)
+}
 
-  	  //event.respondWith(  new Response('This came from the service worker!') )
-	  event.respondWith(
-	    caches.match(event.request).then(function(response) {
-	      if (response) {
-	        return response;
-	      }
-	      return fetch(event.request).then(function(response) {
-	      	if(!response.ok) return reject("Invalid response")
-	        return response;
-	      }).catch(function(error) {
-	      	return caches.match("https://dhsn5tcrzbqtk.cloudfront.net/1/large/5427196-e1341q.jpg")
-	      });
-	    })
-	  );
-
-
+function responseOK(response){
+	return response && response.ok ?
+		response : Promise.reject("Response is not OK")
 }
